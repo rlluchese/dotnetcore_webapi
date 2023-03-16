@@ -1,57 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Ralelu.Domain.Entity;
-using Ralelu.Infrastructure.Repository.Interface;
+﻿using Ralelu.Domain.Entity;
+using Ralelu.Domain.Repository;
+using Ralelu.Infrastructure.Base;
 
 namespace Ralelu.Infrastructure.Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        private readonly AppDbContext _context;
-        private DbSet<User> _users;
-
-        public UserRepository(AppDbContext context)
+        public UserRepository(AppDbContext context) : base(context)
         {
-            _context = context;
-            _users = _context.Users;
-        }
 
-        public void Create(User user)
-        {
-            _users.Add(user);
-            _context.SaveChanges();
-        }
-
-        public void Delete(User user)
-        {
-            _users.Remove(user);
-            _context.SaveChanges();
-        }
-
-        public void DeleteById(int id)
-        {
-            User current = _users.Where(x => x.Id == id).FirstOrDefault();
-
-            if (current != null)
-            {
-                _users.Remove(current);
-                _context.SaveChanges();
-            }
-        }
-
-        public IEnumerable<User> GetAll()
-        {
-            return _users.ToList();
-        }
-
-        public User GetById(int id)
-        {
-            return _users.Where(x => x.Id == id).FirstOrDefault();
-        }
-
-        public void Update(User user)
-        {
-            _context.Update(user);
-            _context.SaveChanges();
         }
     }
 }

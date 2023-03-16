@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Ralelu.Infrastructure.Repository.Interface;
 using Ralelu.WebAPI.Arguments.In.User;
 using Ralelu.WebAPI.Services.Interfaces;
 
@@ -9,12 +8,10 @@ namespace Ralelu.WebAPI.Controllers
     [Route("User")]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository, IUserService userService)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
             _userService = userService;
         }
 
@@ -23,7 +20,7 @@ namespace Ralelu.WebAPI.Controllers
         {
             try
             {
-                var result = _userRepository.GetAll();
+                var result = _userService.GetAll();
                 return Ok(result);
             }
             catch
@@ -38,7 +35,7 @@ namespace Ralelu.WebAPI.Controllers
         {
             try
             {
-                var result = _userRepository.GetById(id);
+                var result = _userService.GetById(id);
 
                 return result != null ? Ok(result) : NotFound();
             }
