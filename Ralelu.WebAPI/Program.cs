@@ -2,6 +2,11 @@ using Ralelu.Infrastructure.Repository.Interface;
 using Ralelu.Infrastructure.Repository;
 using Ralelu.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using Ralelu.Domain.Entity;
+using Ralelu.WebAPI.Arguments.Out.User;
+using Ralelu.WebAPI.Services.Interfaces;
+using Ralelu.WebAPI.Services;
 
 internal class Program
 {
@@ -18,12 +23,24 @@ internal class Program
 
         builder.Services.AddCors();
 
+        // AutoMapper
+        var autoMapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<User, UserOut>();
+            });
+
+        IMapper mapper = autoMapperConfig.CreateMapper();
+        builder.Services.AddSingleton(mapper);
+
         // Context for entity framework
         var connectionString = ConfigurationExtensions.GetConnectionString(builder.Configuration, "mysql");
         builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, MySqlServerVersion.LatestSupportedServerVersion));
 
         // Dependency Injection - Repositories
         builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+        // Dependency Injection - Services
+        builder.Services.AddTransient<IUserService, UserService>();
 
         var app = builder.Build();
 

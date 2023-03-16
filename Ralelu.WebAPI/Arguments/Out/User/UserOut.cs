@@ -18,19 +18,5 @@ namespace Ralelu.WebAPI.Arguments.Out.User
 
         [JsonProperty("updatedOn")]
         public DateTime? UpdatedOn { get; private set; }
-
-        public UserOut(Domain.Entity.User user)
-        {
-            Id = user.Id;
-            Name = user.Name;
-            Email = user.Email;
-            CreatedOn = user.CreatedOn;
-            UpdatedOn = user.UpdatedOn;
-        }
-
-        public static explicit operator UserOut(Domain.Entity.User users)
-        {
-            return new UserOut(users);
-        }
     }
 }

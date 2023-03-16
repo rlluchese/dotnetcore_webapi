@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Ralelu.Domain.Entity;
 using Ralelu.Infrastructure.Repository.Interface;
 using Ralelu.WebAPI.Arguments.In.User;
-using Ralelu.WebAPI.Arguments.Out.User;
+using Ralelu.WebAPI.Services.Interfaces;
 
 namespace Ralelu.WebAPI.Controllers
 {
@@ -11,81 +10,103 @@ namespace Ralelu.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IUserService userService)
         {
             _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_userRepository.GetAll().Select(x => (UserOut)x));
+            try
+            {
+                var result = _userRepository.GetAll();
+                return Ok(result);
+            }
+            catch
+            {
+                // TODO: Log error
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            User user = _userRepository.GetById(id);
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var result = _userRepository.GetById(id);
 
-            return Ok((UserOut)user);
+                return result != null ? Ok(result) : NotFound();
+            }
+            catch
+            {
+                // TODO: Log error
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] UserCreate createUser)
         {
-            if (string.IsNullOrEmpty(createUser.email)
-                || string.IsNullOrEmpty(createUser.Name))
+            try
             {
-                return BadRequest("Invalid arguments.");
+                if (string.IsNullOrEmpty(createUser.email)
+                || string.IsNullOrEmpty(createUser.Name))
+                {
+                    return BadRequest("Invalid arguments.");
+                }
+
+                var result = _userService.Create(createUser);
+
+                return Ok(result);
             }
-
-            User user = new User(createUser.Name, createUser.email);
-            _userRepository.Create(user);
-
-            return Ok((UserOut)user);
+            catch
+            {
+                // TODO: Log error
+                return StatusCode(500);
+            }
         }
 
         [HttpPut("{id}")]
         public IActionResult Update([FromBody] UserCreate createUser, int id)
         {
-            if (string.IsNullOrEmpty(createUser.email)
+            try
+            {
+                if (string.IsNullOrEmpty(createUser.email)
                 || string.IsNullOrEmpty(createUser.Name))
-            {
-                return BadRequest("Invalid arguments.");
+                {
+                    return BadRequest("Invalid arguments.");
+                }
+
+                var result = _userService.Update(createUser, id);
+
+                return result != null ? Ok(result) : NotFound();
             }
-
-            User user = _userRepository.GetById(id);
-
-            if (user == null)
+            catch
             {
-                return NotFound();
+                // TODO: Log error
+                return StatusCode(500);
             }
-
-            user.Update(createUser.Name, createUser.email);
-            _userRepository.Update(user);
-
-            return Ok((UserOut)user);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            User user = _userRepository.GetById(id);
-
-            if (user == null)
+            try
             {
-                return NotFound();
+                bool result = _userService.Delete(id);
+
+                return result ? Ok() : NotFound();
             }
-
-            _userRepository.Delete(user);
-
-            return Ok();
+            catch
+            {
+                // TODO: Log error
+                return StatusCode(500);
+            }
         }
     }
 }
