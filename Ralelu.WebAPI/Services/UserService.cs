@@ -44,7 +44,7 @@ namespace Ralelu.WebAPI.Services
 
         public IEnumerable<UserOut> GetAll()
         {
-            return _unitOfWork.UserRepository.GetAll().Select(x => _mapper.Map<UserOut>(x));
+            return _unitOfWork.UserRepository.GetAllWithPosts().Select(x => _mapper.Map<UserOut>(x));
         }
 
         public UserOut GetById(int id)

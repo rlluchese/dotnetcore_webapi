@@ -4,5 +4,6 @@ namespace Ralelu.Domain.Repository
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        IEnumerable<User> GetAllWithPosts();
     }
 }

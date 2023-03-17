@@ -7,7 +7,7 @@ namespace Ralelu.Infrastructure.Base
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly AppDbContext _dbContext;
-        private DbSet<T> _dbSet;
+        protected DbSet<T> _dbSet;
 
         public GenericRepository(AppDbContext context)
         {

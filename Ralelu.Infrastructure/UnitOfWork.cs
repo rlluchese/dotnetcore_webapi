@@ -8,10 +8,16 @@ namespace Ralelu.Infrastructure
     {
         private readonly AppDbContext _dbContext;
         private IUserRepository _userRepository;
+        private IPostRepository _postRepository;
 
         public IUserRepository UserRepository
         {
             get { return _userRepository = _userRepository ?? new UserRepository(_dbContext); }
+        }
+
+        public IPostRepository PostRepository
+        {
+            get { return _postRepository = _postRepository ?? new PostRepository(_dbContext); }
         }
 
         public UnitOfWork(AppDbContext dbContext)

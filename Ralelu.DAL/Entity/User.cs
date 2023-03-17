@@ -13,10 +13,13 @@ namespace Ralelu.Domain.Entity
         [EmailAddress]
         public string Email { get; private set; }
 
+        public ICollection<Post> Posts { get; private set; }
+
         public User(string name, string email)
         {
             Name = name;
             Email = email;
+            Posts = new List<Post>();
             CreatedOn = DateTime.Now;
             UpdatedOn = null;
             IsDeleted = false;

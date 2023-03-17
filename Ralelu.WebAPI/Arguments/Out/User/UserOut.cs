@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Ralelu.WebAPI.Arguments.Out.Post;
 
 namespace Ralelu.WebAPI.Arguments.Out.User
 {
@@ -12,6 +13,9 @@ namespace Ralelu.WebAPI.Arguments.Out.User
 
         [JsonProperty("email")]
         public string Email { get; private set; }
+
+        [JsonProperty("posts")]
+        public List<PostOut> Posts { get; private set; }
 
         [JsonProperty("createdOn")]
         public DateTime CreatedOn { get; private set; }
